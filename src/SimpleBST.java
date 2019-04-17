@@ -27,7 +27,7 @@ public class SimpleBST<K, V> implements SimpleMap<K, V> {
    * The size of the tree.
    */
   int size;
-  
+
   /**
    * A cached value (useful in some circumstances.
    */
@@ -61,8 +61,8 @@ public class SimpleBST<K, V> implements SimpleMap<K, V> {
 
   @Override
   public V set(K key, V value) {
-    // TODO Auto-generated method stub
-    return null;
+    this.root = sethelp(root, key, value);
+    return cachedValue;
   } // set(K,V)
 
   @Override
@@ -137,10 +137,20 @@ public class SimpleBST<K, V> implements SimpleMap<K, V> {
 
   @Override
   public void forEach(BiConsumer<? super K, ? super V> action) {
-    // TODO Auto-generated method stub
+   
 
   } // forEach
 
+  public void forEachHelper(BiConsumer<? super K, ? super V> action, BSTNode<K, V> Node) {
+    if (Node == null) {
+      return;
+    }
+    action.accept(Node.key, Node.value);
+    
+    forEachHelper(action, Node.left);
+    forEachHelper(action, Node.right);
+     
+  }
   // +----------------------+----------------------------------------
   // | Other public methods |
   // +----------------------+
@@ -157,6 +167,32 @@ public class SimpleBST<K, V> implements SimpleMap<K, V> {
   // | Helpers |
   // +---------+
 
+  private BSTNode<K, V> sethelp(BSTNode<K, V> node, K key, V value) {
+
+    if (node == null) {
+      cachedValue = null;
+      size++;
+      return new BSTNode<K, V>(key, value);
+    }
+
+    else {
+      int comp = comparator.compare(key, node.key);
+      if (comp == 0) {
+        cachedValue = node.value;
+        node.value = value;
+        return node;
+      } else if (comp > 0) {
+        node.right = sethelp(node.right, key, value);
+        return node;
+      } else {
+        node.left = sethelp(node.left, key, value);
+        return node;
+      }
+
+    }
+
+  }
+
   /**
    * Dump a portion of the tree to some output location.
    */
@@ -171,12 +207,12 @@ public class SimpleBST<K, V> implements SimpleMap<K, V> {
       } // if has children
     } // else
   } // dump
-  
+
   /**
-   * Get the value associated with a key in a subtree rooted at node.  See the
-   * top-level get for more details.
+   * Get the value associated with a key in a subtree rooted at node. See the top-level get for more
+   * details.
    */
-  V get(K key, BSTNode<K,V> node) {
+  V get(K key, BSTNode<K, V> node) {
     if (node == null) {
       throw new IndexOutOfBoundsException("Invalid key: " + key);
     }
