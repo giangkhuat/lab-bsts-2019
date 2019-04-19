@@ -37,8 +37,8 @@ public class SimpleBSTExperiment {
     pen.println();
 
     removeExperiment(pen, example, "vicuna"); // leaf?
-    removeExperiment(pen, example, "koala"); // middle?
-    removeExperiment(pen, example, "civet"); // root?
+    removeExperiment(pen, example, "dog"); // middle?
+    removeExperiment(pen, example, "sam"); // root?
 
   } // main(String[])
 

@@ -87,10 +87,41 @@ public class SimpleBST<K, V> implements SimpleMap<K, V> {
 
   @Override
   public V remove(K key) {
-    // TODO Auto-generated method stub
-    return null;
+    root = removeHelper(root, key);
+    return cachedValue;
   } // remove(K)
 
+  private BSTNode <K, V> removeHelper(BSTNode node, K key) {
+    if (node == null) {
+      cachedValue = null;
+      return null;
+    } else {
+      cachedValue = (V) node.value;
+      int comp = comparator.compare(key, (K) node.key);
+      if (comp == 0 ) { // that is the value we want to remove
+        if (node.left == null && node.right == null) { // if that silly is a leaf
+        return null;
+        } else if (node.left == null) {
+          return node.right;
+        } else if(node.right == null) {
+          return node.left;
+        } else {
+          //something complicated
+        }
+        
+      }
+      else if(comp < 0) {
+        node.left = removeHelper(node.left, key);
+        return node;
+        
+      }
+      else if(comp > 0) {
+        node.right = removeHelper(node.right, key);
+        return node;
+      }
+    }
+    return node;
+  }
   @Override
   public Iterator<K> keys() {
     return new Iterator<K>() {
