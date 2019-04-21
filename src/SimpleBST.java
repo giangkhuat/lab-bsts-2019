@@ -91,37 +91,54 @@ public class SimpleBST<K, V> implements SimpleMap<K, V> {
     return cachedValue;
   } // remove(K)
 
-  private BSTNode <K, V> removeHelper(BSTNode node, K key) {
+  @SuppressWarnings("unchecked")
+  private BSTNode<K, V> removeHelper(BSTNode<K, V> node, K key) {
     if (node == null) {
       cachedValue = null;
       return null;
     } else {
       cachedValue = (V) node.value;
       int comp = comparator.compare(key, (K) node.key);
-      if (comp == 0 ) { // that is the value we want to remove
+      if (comp == 0) { // found the value we want to remove
+        // case leaf node
         if (node.left == null && node.right == null) { // if that silly is a leaf
-        return null;
-        } else if (node.left == null) {
+          return null;
+        } // case one child
+        else if (node.left == null) {
           return node.right;
-        } else if(node.right == null) {
+        } else if (node.right == null) {
           return node.left;
         } else {
-          //something complicated
+          // something complicated
+          BSTNode<K, V> current = node.left;
+          // save key and value of current before we remove it
+          K temp = current.key;
+          V tempVal = current.value;
+          while (current.right != null) {
+            current = current.right;
+          }
+          // remove the rightmost element of that left subtree
+          // this will go back to case 2 because you keep dig down
+          // until the right subtree is null
+          remove(current.key);
+          // update the node we want to remove
+          node.key = temp;
+          node.value = tempVal;
+          return node;
         }
-        
-      }
-      else if(comp < 0) {
+
+      } else if (comp < 0) {
         node.left = removeHelper(node.left, key);
         return node;
-        
-      }
-      else if(comp > 0) {
+
+      } else if (comp > 0) {
         node.right = removeHelper(node.right, key);
         return node;
       }
     }
     return node;
   }
+
   @Override
   public Iterator<K> keys() {
     return new Iterator<K>() {
@@ -168,7 +185,7 @@ public class SimpleBST<K, V> implements SimpleMap<K, V> {
 
   @Override
   public void forEach(BiConsumer<? super K, ? super V> action) {
-   
+
 
   } // forEach
 
@@ -177,10 +194,10 @@ public class SimpleBST<K, V> implements SimpleMap<K, V> {
       return;
     }
     action.accept(Node.key, Node.value);
-    
+
     forEachHelper(action, Node.left);
     forEachHelper(action, Node.right);
-     
+
   }
   // +----------------------+----------------------------------------
   // | Other public methods |
