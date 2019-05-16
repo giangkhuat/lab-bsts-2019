@@ -221,9 +221,7 @@ public class SimpleBST<K, V> implements SimpleMap<K, V> {
       cachedValue = null;
       size++;
       return new BSTNode<K, V>(key, value);
-    }
-
-    else {
+    } else {
       int comp = comparator.compare(key, node.key);
       if (comp == 0) {
         cachedValue = node.value;
